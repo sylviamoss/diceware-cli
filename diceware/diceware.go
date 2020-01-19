@@ -15,7 +15,7 @@ import (
 	"golang.org/x/text/unicode/norm"
 )
 
-func Generate(lang string, size int32) error {
+func Generate(lang string, size int32, pbcopy bool, hide bool) error {
 	var words = ""
 
 	for i := 1; i <= int(size); i++ {
@@ -25,14 +25,21 @@ func Generate(lang string, size int32) error {
 	}
 	words = words[:len(words)-1]
 
-	cmd := fmt.Sprintf("echo %s | pbcopy", words)
-	if err := exec.Command("sh", "-c", cmd).Run(); err != nil {
-		return err
+	if pbcopy || hide {
+		cmd := fmt.Sprintf("echo %s | pbcopy", words)
+		if err := exec.Command("sh", "-c", cmd).Run(); err != nil {
+			return err
+		}
+		fmt.Println("Password copied!!")
 	}
+
+	if hide {
+		return nil
+	}
+
 	fmt.Println("-------------------")
 	fmt.Println(words)
 	fmt.Println("-------------------")
-	fmt.Println("Password copied!!")
 	return nil
 }
 

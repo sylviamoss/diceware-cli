@@ -18,7 +18,7 @@ var rootCmd = &cobra.Command{
 }
 
 func Execute() {
-	generateCmd.Flags().StringVarP(&lang, "lang", "l", "en", "lang (en, pt,...)")
+	generateCmd.Flags().StringVarP(&lang, "lang", "l", "en", "lang (default to English)")
 	generateCmd.Flags().Int32VarP(&size, "size", "s", 6, "how many words the password will have (default to 6 words)")
 
 	rootCmd.AddCommand(generateCmd)

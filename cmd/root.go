@@ -9,16 +9,18 @@ import (
 
 var rootCmd = &cobra.Command{
 	Use:   "diceware",
-	Short: "Pitcher is a CLI tool to play tones",
-	Long: `A Fast and Flexible Static Site Generator built with
-				  love by spf13 and friends in Go.
-				  Complete documentation is available at http://hugo.spf13.com`,
+	Short: "A generator of diceware passwords.",
+	Long: `diceware-cli let's you generate strong passwords based on easily memorable passwords that are 
+	also extremely resistant to attack.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("Pitcher is a CLI tool to play tones. User help to see usage options.")
+		fmt.Println("Use command generate to start generating your strong passwords!")
 	},
 }
 
 func Execute() {
+	generateCmd.Flags().StringVarP(&lang, "lang", "l", "en", "lang (en, pt,...)")
+	generateCmd.Flags().Int32VarP(&size, "size", "s", 6, "how many words the password will have (default to 6 words)")
+
 	rootCmd.AddCommand(generateCmd)
 	if err := rootCmd.Execute(); err != nil {
 		fmt.Println(err)

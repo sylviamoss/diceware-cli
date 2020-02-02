@@ -18,10 +18,11 @@ var rootCmd = &cobra.Command{
 }
 
 func Execute() {
-	generateCmd.Flags().StringVarP(&lang, "lang", "l", "en", "password language")
-	generateCmd.Flags().Int32VarP(&size, "size", "s", 6, "the amount words the password will have")
-	generateCmd.Flags().BoolVarP(&pbcopy, "copy", "c", false, "pbcopy password")
-	generateCmd.Flags().BoolVar(&hide, "hide", false, "pbcopy and hide password. Password WON'T be printed out")
+	generateCmd.Flags().StringVarP(&generateConfig.Lang, "lang", "l", "en", "password language")
+	generateCmd.Flags().StringVar(&generateConfig.Separator, "separator", " ", "character that separates the words")
+	generateCmd.Flags().Int32VarP(&generateConfig.Size, "size", "s", 6, "the amount words the password will have")
+	generateCmd.Flags().BoolVarP(&generateConfig.Pbcopy, "copy", "c", false, "pbcopy password")
+	generateCmd.Flags().BoolVar(&generateConfig.Hide, "hide", false, "pbcopy and hide password. Password WON'T be printed out")
 
 	rootCmd.AddCommand(generateCmd)
 	if err := rootCmd.Execute(); err != nil {

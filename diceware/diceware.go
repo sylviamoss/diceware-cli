@@ -15,17 +15,30 @@ import (
 	"golang.org/x/text/unicode/norm"
 )
 
-func Generate(lang string, size int32, pbcopy bool, hide bool) error {
+type GenerateConfig struct {
+	Lang   string
+	Size   int32
+	Pbcopy bool
+	Hide   bool
+	Separator string
+}
+
+func Generate(generateConfig GenerateConfig) error {
 	var words = ""
+	separator := generateConfig.Separator
 
-	for i := 1; i <= int(size); i++ {
-		index := findDicewareWordIndex()
-		word := findDicewareWord(index, lang)
-		words = words + word + " "
+	if separator == "none" {
+		separator = ""
 	}
-	words = words[:len(words)-1]
 
-	if pbcopy || hide {
+	for i := 1; i <= int(generateConfig.Size); i++ {
+		index := findDicewareWordIndex()
+		word := findDicewareWord(index, generateConfig.Lang)
+		words = words + word + separator
+	}
+	words = words[:len(words)-len(separator)]
+
+	if generateConfig.Pbcopy || generateConfig.Hide {
 		cmd := fmt.Sprintf("echo %s | pbcopy", words)
 		if err := exec.Command("sh", "-c", cmd).Run(); err != nil {
 			return err
@@ -33,7 +46,7 @@ func Generate(lang string, size int32, pbcopy bool, hide bool) error {
 		fmt.Println("Password copied!!")
 	}
 
-	if hide {
+	if generateConfig.Hide {
 		return nil
 	}
 

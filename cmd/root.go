@@ -18,8 +18,8 @@ var rootCmd = &cobra.Command{
 }
 
 func Execute() {
-	generateCmd.Flags().StringVarP(&generateConfig.Lang, "lang", "l", "en", "password language")
-	generateCmd.Flags().StringVar(&generateConfig.Separator, "separator", " ", "character that separates the words")
+	generateCmd.Flags().StringVarP(&generateConfig.Lang, "lang", "l", "en", "password language\n available langs: en, pt")
+	generateCmd.Flags().StringVar(&generateConfig.Separator, "separator", " ", "character that separates the words,\n to remove reparator use --separator=none")
 	generateCmd.Flags().Int32VarP(&generateConfig.Size, "size", "s", 6, "the amount words the password will have")
 	generateCmd.Flags().BoolVarP(&generateConfig.Pbcopy, "copy", "c", false, "pbcopy password")
 	generateCmd.Flags().BoolVar(&generateConfig.Hide, "hide", false, "pbcopy and hide password. Password WON'T be printed out")

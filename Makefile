@@ -4,16 +4,11 @@ build:
 	@go build -o ~/go/bin/diceware .
 
 build_windows:
-	@GOOS=windows go build -o ./pkg/diceware . \
-		&& zip ./pkg/diceware_windows_$(GOARCH).zip ./pkg/diceware \
-		&& rm ./pkg/diceware
+	@env GOOS=windows go build . \
+		&& zip ./pkg/diceware_windows_$(GOARCH).zip diceware-cli.exe \
+		&& rm diceware-cli.exe
 
 build_linux:
-	@GOOS=linux go build -o ./pkg/diceware . \
-		&& zip ./pkg/diceware_linux_$(GOARCH).zip ./pkg/diceware \
-		&& rm ./pkg/diceware
-
-build_macOS:
-	@go build -o ./pkg/diceware . \
-		&& zip ./pkg/diceware_macOS_$(GOARCH).zip ./pkg/diceware \
-		&& rm ./pkg/diceware
+	@env GOOS=linux go build . \
+		&& zip ./pkg/diceware_linux_$(GOARCH).zip diceware-cli \
+		&& rm diceware-cli

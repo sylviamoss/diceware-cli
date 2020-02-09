@@ -13,7 +13,7 @@ var rootCmd = &cobra.Command{
 	Long: `diceware-cli let's you generate strong passwords based on easily memorable passwords that are 
 	also extremely resistant to attack.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("Use command generate to start generating your strong passwords!")
+		fmt.Println("Use command 'generate' to start generating your strong passwords! Or 'help' for more instructions.")
 	},
 }
 

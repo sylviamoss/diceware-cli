@@ -32,7 +32,7 @@ func Generate(generateConfig GenerateConfig, box packr.Box) error {
 		separator = ""
 	}
 
-	var words = ""
+	var words string
 	for i := 1; i <= int(generateConfig.Size); i++ {
 		index := findDicewareWordIndex()
 		word := findDicewareWord(index, generateConfig.Lang)
@@ -64,7 +64,7 @@ func Generate(generateConfig GenerateConfig, box packr.Box) error {
 }
 
 func findDicewareWordIndex() string {
-	var number = ""
+	var number string
 	for j := 1; j <= 5; j++ {
 		number = number + strconv.FormatInt(throwDice(), 10)
 	}
@@ -72,8 +72,7 @@ func findDicewareWordIndex() string {
 }
 
 func throwDice() int64 {
-	var number int64 = 0
-
+	var number int64
 	for number == 0 {
 		nBig, err := rand.Int(rand.Reader, big.NewInt(7))
 		if err != nil {

@@ -1,36 +1,38 @@
 package diceware
 
 import (
-	"bufio"
 	"crypto/rand"
 	"fmt"
 	"math/big"
-	"os"
 	"os/exec"
 	"strconv"
 	"unicode"
 
+	"github.com/gobuffalo/packr"
 	"golang.org/x/text/runes"
 	"golang.org/x/text/transform"
 	"golang.org/x/text/unicode/norm"
 )
 
 type GenerateConfig struct {
-	Lang   string
-	Size   int32
-	Pbcopy bool
-	Hide   bool
+	Lang      string
+	Size      int32
+	Pbcopy    bool
+	Hide      bool
 	Separator string
 }
 
-func Generate(generateConfig GenerateConfig) error {
-	var words = ""
-	separator := generateConfig.Separator
+var wordsBox packr.Box
 
+func Generate(generateConfig GenerateConfig, box packr.Box) error {
+	wordsBox = box
+
+	separator := generateConfig.Separator
 	if separator == "none" {
 		separator = ""
 	}
 
+	var words string
 	for i := 1; i <= int(generateConfig.Size); i++ {
 		index := findDicewareWordIndex()
 		word := findDicewareWord(index, generateConfig.Lang)
@@ -43,10 +45,15 @@ func Generate(generateConfig GenerateConfig) error {
 		if err := exec.Command("sh", "-c", cmd).Run(); err != nil {
 			return err
 		}
-		fmt.Println("Password copied!!")
+		fmt.Println("Password copied!")
 	}
 
 	if generateConfig.Hide {
+		return nil
+	}
+
+	if words == "" {
+		fmt.Println("Unable to generate passphrase.")
 		return nil
 	}
 
@@ -57,7 +64,7 @@ func Generate(generateConfig GenerateConfig) error {
 }
 
 func findDicewareWordIndex() string {
-	var number = ""
+	var number string
 	for j := 1; j <= 5; j++ {
 		number = number + strconv.FormatInt(throwDice(), 10)
 	}
@@ -65,12 +72,11 @@ func findDicewareWordIndex() string {
 }
 
 func throwDice() int64 {
-	var number int64 = 0
-
+	var number int64
 	for number == 0 {
 		nBig, err := rand.Int(rand.Reader, big.NewInt(7))
 		if err != nil {
-			panic(err)
+			panic(err) // TODO don't panic!
 		}
 		number = nBig.Int64()
 	}
@@ -79,20 +85,12 @@ func throwDice() int64 {
 }
 
 func findDicewareWord(number string, lang string) string {
-	file, err := os.Open("diceware_words_" + lang + "/" + number + ".txt")
-
+	word, err := wordsBox.FindString("diceware_words_" + lang + "/" + number + ".txt")
 	if err != nil {
 		return ""
 	}
-	defer file.Close()
 
-	scanner := bufio.NewScanner(file)
-
-	for scanner.Scan() {
-		word := scanner.Text()
-		t := transform.Chain(norm.NFD, runes.Remove(runes.In(unicode.Mn)), norm.NFC)
-		transformedWord, _, _ := transform.String(t, word)
-		return transformedWord
-	}
-	return ""
+	t := transform.Chain(norm.NFD, runes.Remove(runes.In(unicode.Mn)), norm.NFC)
+	transformedWord, _, _ := transform.String(t, word)
+	return transformedWord
 }

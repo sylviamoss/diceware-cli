@@ -1,7 +1,12 @@
 package main
 
-import "diceware-cli/cmd"
+import (
+	"diceware-cli/cmd"
+
+	"github.com/gobuffalo/packr"
+)
 
 func main() {
-	cmd.Execute()
+	box := packr.NewBox("./words")
+	cmd.Execute(box)
 }

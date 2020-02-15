@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/gobuffalo/packr"
 	"github.com/spf13/cobra"
 )
 
@@ -17,7 +18,8 @@ var rootCmd = &cobra.Command{
 	},
 }
 
-func Execute() {
+func Execute(box packr.Box) {
+	wordsBox = box
 	generateCmd.Flags().StringVarP(&generateConfig.Lang, "lang", "l", "en", "password language\n available langs: en, pt")
 	generateCmd.Flags().StringVar(&generateConfig.Separator, "separator", " ", "character that separates the words,\n to remove reparator use --separator=none")
 	generateCmd.Flags().Int32VarP(&generateConfig.Size, "size", "s", 6, "the amount words the password will have")

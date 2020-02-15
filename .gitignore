@@ -1,3 +1,4 @@
 diceware-cli
 pkg/
 .DS_Store
+.vscode/

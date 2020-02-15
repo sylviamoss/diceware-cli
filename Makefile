@@ -12,3 +12,8 @@ build_linux:
 	@env GOOS=linux go build . \
 		&& zip ./pkg/diceware_linux_$(GOARCH).zip diceware-cli \
 		&& rm diceware-cli
+
+build_mac:
+	@go build . \
+		&& zip ./pkg/diceware_macOS_$(GOARCH).zip diceware-cli \
+		&& rm diceware-cli

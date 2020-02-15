@@ -17,3 +17,5 @@ build_mac:
 	@go build . \
 		&& zip ./pkg/diceware_macOS_$(GOARCH).zip diceware-cli \
 		&& rm diceware-cli
+
+release: build_mac build_linux build_windows

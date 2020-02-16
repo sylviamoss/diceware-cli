@@ -34,8 +34,14 @@ func Generate(generateConfig GenerateConfig, box packr.Box) error {
 
 	var words string
 	for i := 1; i <= int(generateConfig.Size); i++ {
-		index := findDicewareWordIndex()
-		word := findDicewareWord(index, generateConfig.Lang)
+		index, err := findDicewareWordIndex()
+		if err != nil {
+			return err
+		}
+		word, err := findDicewareWord(index, generateConfig.Lang)
+		if err != nil {
+			return err
+		}
 		words = words + word + separator
 	}
 	words = words[:len(words)-len(separator)]
@@ -43,7 +49,7 @@ func Generate(generateConfig GenerateConfig, box packr.Box) error {
 	if generateConfig.Pbcopy || generateConfig.Hide {
 		cmd := fmt.Sprintf("echo %s | pbcopy", words)
 		if err := exec.Command("sh", "-c", cmd).Run(); err != nil {
-			return err
+			return fmt.Errorf("error copying passphrase: %s", err.Error())
 		}
 		fmt.Println("Password copied!")
 	}
@@ -53,8 +59,7 @@ func Generate(generateConfig GenerateConfig, box packr.Box) error {
 	}
 
 	if words == "" {
-		fmt.Println("Unable to generate passphrase.")
-		return nil
+		return fmt.Errorf("unable to generate passphrase.")
 	}
 
 	fmt.Println("-------------------")
@@ -63,34 +68,41 @@ func Generate(generateConfig GenerateConfig, box packr.Box) error {
 	return nil
 }
 
-func findDicewareWordIndex() string {
+func findDicewareWordIndex() (string, error) {
 	var number string
 	for j := 1; j <= 5; j++ {
-		number = number + strconv.FormatInt(throwDice(), 10)
+		dice, err := throwDice()
+		if err != nil {
+			return number, err
+		}
+		number = number + strconv.FormatInt(dice, 10)
 	}
-	return number
+	return number, nil
 }
 
-func throwDice() int64 {
+func throwDice() (int64, error) {
 	var number int64
 	for number == 0 {
 		nBig, err := rand.Int(rand.Reader, big.NewInt(7))
 		if err != nil {
-			panic(err) // TODO don't panic!
+			return number, fmt.Errorf("error while throwing the dice: %s", err.Error())
 		}
 		number = nBig.Int64()
 	}
 
-	return number
+	return number, nil
 }
 
-func findDicewareWord(number string, lang string) string {
+func findDicewareWord(number string, lang string) (string, error) {
 	word, err := wordsBox.FindString("diceware_words_" + lang + "/" + number + ".txt")
 	if err != nil {
-		return ""
+		return "", fmt.Errorf("unable to find word for index %s. err: %s", number, err.Error())
 	}
 
 	t := transform.Chain(norm.NFD, runes.Remove(runes.In(unicode.Mn)), norm.NFC)
-	transformedWord, _, _ := transform.String(t, word)
-	return transformedWord
+	transformedWord, _, err := transform.String(t, word)
+	if err != nil {
+		return "", fmt.Errorf("unable to remove special characters from %s. err: %s", word, err.Error())
+	}
+	return transformedWord, nil
 }

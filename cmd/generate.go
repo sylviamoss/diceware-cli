@@ -10,7 +10,7 @@ import (
 
 var (
 	generateConfig diceware.GenerateConfig
-	wordsBox            packr.Box
+	wordsBox       packr.Box
 
 	generateCmd = &cobra.Command{
 		Use:   "generate",
@@ -18,8 +18,7 @@ var (
 		Long: `Generates strong passwords based on easily memorable passwords that are 
 	also extremely resistant to attack.`,
 		Run: func(cmd *cobra.Command, args []string) {
-			err := diceware.Generate(generateConfig, wordsBox)
-			if err != nil {
+			if err := diceware.Generate(generateConfig, wordsBox); err != nil {
 				fmt.Printf("Ops...something went wrong: %s", err.Error())
 			}
 		},

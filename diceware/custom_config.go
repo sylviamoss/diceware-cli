@@ -4,7 +4,10 @@ import (
 	"bufio"
 	"fmt"
 	"os"
+	"strconv"
 	"strings"
+
+	"github.com/cheggaaa/pb/v3"
 )
 
 type CustomConfig struct {
@@ -43,9 +46,16 @@ func (c *CustomConfig) newLanguage() error {
 		os.MkdirAll(dicewarePath, os.ModePerm)
 	}
 
+	count := 66666
+	bar := pb.StartNew(count)
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
 		words := strings.Fields(scanner.Text())
+		number, err := strconv.ParseInt(words[0], 10, 32)
+		if err != nil {
+			return err
+		}
+		bar.SetCurrent(number)
 		f, err := os.Create(dicewarePath + "/" + words[0] + ".txt")
 		if err != nil {
 			return err
@@ -54,6 +64,7 @@ func (c *CustomConfig) newLanguage() error {
 		f.Sync()
 		f.Close()
 	}
+	bar.Finish()
 
 	if err := scanner.Err(); err != nil {
 		return err

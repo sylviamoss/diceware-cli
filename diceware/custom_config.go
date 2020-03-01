@@ -43,7 +43,10 @@ func (c *CustomConfig) newLanguage() error {
 
 	dicewarePath := home + "/.diceware/diceware_words_" + c.Name
 	if _, err := os.Stat(dicewarePath); os.IsNotExist(err) {
-		os.MkdirAll(dicewarePath, os.ModePerm)
+		err = os.MkdirAll(dicewarePath, os.ModePerm)
+	}
+	if err != nil && !os.IsNotExist(err) {
+		return err
 	}
 
 	count := 66666

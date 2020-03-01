@@ -12,8 +12,8 @@ var (
 
 	configCmd = &cobra.Command{
 		Use:   "config",
-		Short: "Adds diceware custom configuration such as new languages.",
-		Long:  `Adds diceware custom configuration such as new languages`,
+		Short: "Adds new language dictionary.",
+		Long:  `Adds new language dictionary.`,
 		Run: func(cmd *cobra.Command, args []string) {
 			err := customConfig.Configure()
 			if err != nil {

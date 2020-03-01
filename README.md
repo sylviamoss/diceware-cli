@@ -4,6 +4,8 @@ A tool that generates strong passwords based on easily memorable words that are 
 [Click here](http://world.std.com/~reinhold/diceware.html) to know more about the diceware passphrase.
 
 ## Usage
+
+### Generate passphrase
 ```
 Usage:
   diceware generate [flags]
@@ -17,7 +19,34 @@ Flags:
       --separator string   character that separates the words,
                             to remove reparator use --separator=none (default " ")
   -s, --size int32         the amount words the password will have (default 6)
+```    
+   
+
+### Add custom language dictionary
+
 ```
+Adds new language dictionary.
+
+Usage:
+  diceware config [flags]
+
+Flags:
+  -a, --add             add new config
+  -h, --help            help for config
+  -l, --lang            add new language
+  -n, --name string     language name
+  -s, --source string   dictionary source file
+```
+
+Example:
+```
+diceware config --add --lang --source=/Users/diceware-cli/dictionary_file.txt --name=es
+```
+or
+```
+diceware config -a -l -s=/Users/diceware-cli/dictionary_file.txt -n=es
+```   
+
 
 ## Installation Guide
 

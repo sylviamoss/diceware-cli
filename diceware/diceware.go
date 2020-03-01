@@ -1,9 +1,11 @@
 package diceware
 
 import (
+	"bufio"
 	"crypto/rand"
 	"fmt"
 	"math/big"
+	"os"
 	"os/exec"
 	"strconv"
 	"unicode"
@@ -94,9 +96,13 @@ func throwDice() (int64, error) {
 }
 
 func findDicewareWord(number string, lang string) (string, error) {
-	word, err := wordsBox.FindString("diceware_words_" + lang + "/" + number + ".txt")
+	wordPath := "diceware_words_" + lang + "/" + number + ".txt"
+	word, err := wordsBox.FindString(wordPath)
 	if err != nil {
-		return "", fmt.Errorf("unable to find word for index %s. err: %s", number, err.Error())
+		word, err = findCustomDicewareWord(wordPath)
+		if err != nil {
+			return "", fmt.Errorf("unable to find word for index %s. err: %s", number, err.Error())
+		}
 	}
 
 	t := transform.Chain(norm.NFD, runes.Remove(runes.In(unicode.Mn)), norm.NFC)
@@ -105,4 +111,23 @@ func findDicewareWord(number string, lang string) (string, error) {
 		return "", fmt.Errorf("unable to remove special characters from %s. err: %s", word, err.Error())
 	}
 	return transformedWord, nil
+}
+
+func findCustomDicewareWord(wordPath string) (string, error) {
+	home, err := os.UserHomeDir()
+	if err != nil {
+		return "", err
+	}
+	file, err := os.Open(home + "/.diceware/" + wordPath)
+	if err != nil {
+		return "", err
+	}
+	defer file.Close()
+
+	scanner := bufio.NewScanner(file)
+	for scanner.Scan() {
+		return scanner.Text(), nil
+	}
+
+	return "", fmt.Errorf("couldn't read word from custom dictionary.")
 }

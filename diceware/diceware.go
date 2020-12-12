@@ -64,9 +64,7 @@ func Generate(generateConfig GenerateConfig, box packr.Box) error {
 		return fmt.Errorf("unable to generate passphrase.")
 	}
 
-	fmt.Println("-------------------")
 	fmt.Println(words)
-	fmt.Println("-------------------")
 	return nil
 }
 

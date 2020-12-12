@@ -14,7 +14,6 @@ builds:
       - -trimpath #removes all file system paths from the compiled executable
     goos:
       - freebsd
-      - windows
       - linux
       - darwin
     goarch:

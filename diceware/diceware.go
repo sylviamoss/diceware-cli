@@ -26,21 +26,21 @@ type GenerateConfig struct {
 
 var wordsBox packr.Box
 
-func Generate(generateConfig GenerateConfig, box packr.Box) error {
+func (c *GenerateConfig) Generate(box packr.Box) error {
 	wordsBox = box
 
-	separator := generateConfig.Separator
+	separator := c.Separator
 	if separator == "none" {
 		separator = ""
 	}
 
 	var words string
-	for i := 1; i <= int(generateConfig.Size); i++ {
+	for i := 1; i <= int(c.Size); i++ {
 		index, err := findDicewareWordIndex()
 		if err != nil {
 			return err
 		}
-		word, err := findDicewareWord(index, generateConfig.Lang)
+		word, err := findDicewareWord(index, c.Lang)
 		if err != nil {
 			return err
 		}
@@ -48,7 +48,7 @@ func Generate(generateConfig GenerateConfig, box packr.Box) error {
 	}
 	words = words[:len(words)-len(separator)]
 
-	if generateConfig.Pbcopy || generateConfig.Hide {
+	if c.Pbcopy || c.Hide {
 		cmd := fmt.Sprintf("echo %s | pbcopy", words)
 		if err := exec.Command("sh", "-c", cmd).Run(); err != nil {
 			return fmt.Errorf("error copying passphrase: %s", err.Error())
@@ -56,7 +56,7 @@ func Generate(generateConfig GenerateConfig, box packr.Box) error {
 		fmt.Println("Password copied!")
 	}
 
-	if generateConfig.Hide {
+	if c.Hide {
 		return nil
 	}
 
@@ -99,14 +99,14 @@ func findDicewareWord(number string, lang string) (string, error) {
 	if err != nil {
 		word, err = findCustomDicewareWord(wordPath)
 		if err != nil {
-			return "", fmt.Errorf("unable to find word for index %s. err: %s", number, err.Error())
+			return "", fmt.Errorf("unable to find word for index %q. err: %s", number, err.Error())
 		}
 	}
 
 	t := transform.Chain(norm.NFD, runes.Remove(runes.In(unicode.Mn)), norm.NFC)
 	transformedWord, _, err := transform.String(t, word)
 	if err != nil {
-		return "", fmt.Errorf("unable to remove special characters from %s. err: %s", word, err.Error())
+		return "", fmt.Errorf("unable to remove special characters from %q. err: %s", word, err.Error())
 	}
 	return transformedWord, nil
 }

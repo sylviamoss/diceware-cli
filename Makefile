@@ -1,7 +1,7 @@
 GOARCH=$(shell go env GOARCH)
 
 build: 
-	@go build -o ~/go/bin/diceware .
+	@go build -o ~/go/bin/diceware-cli .
 
 build_windows:
 	@env GOOS=windows go build . \

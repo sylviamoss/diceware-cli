@@ -18,7 +18,7 @@ var (
 		Long: `Generates strong passwords based on easily memorable passwords that are 
 	also extremely resistant to attack.`,
 		Run: func(cmd *cobra.Command, args []string) {
-			if err := diceware.Generate(generateConfig, wordsBox); err != nil {
+			if err := generateConfig.Generate(wordsBox); err != nil {
 				fmt.Printf("Ops...something went wrong: %s", err.Error())
 			}
 		},

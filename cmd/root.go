@@ -9,12 +9,12 @@ import (
 )
 
 var rootCmd = &cobra.Command{
-	Use:   "diceware",
-	Short: "A generator of diceware passwords.",
-	Long: `diceware-cli let's you generate strong passwords based on easily memorable passwords that are 
+	Use:   "diceware-cli",
+	Short: "A generator of strong passwords using diceware passphrase..",
+	Long: `diceware-cli let's you generate strong passwords based on easily memorable passphrases that are 
 	also extremely resistant to attack.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("Use command 'generate' to start generating your strong passwords! Or 'help' for more instructions.")
+		fmt.Println("Use command 'generate' to start generating your strong passwords, or 'help' for instructions.")
 	},
 }
 

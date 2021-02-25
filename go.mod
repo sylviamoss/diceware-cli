@@ -1,4 +1,4 @@
-module diceware-cli
+module github.com/sylviamoss/diceware-cli
 
 go 1.16
 

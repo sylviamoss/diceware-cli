@@ -1,10 +1,10 @@
 package cmd
 
 import (
-	"diceware-cli/diceware"
 	"fmt"
 
 	"github.com/spf13/cobra"
+	"github.com/sylviamoss/diceware-cli/diceware"
 )
 
 var (

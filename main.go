@@ -1,7 +1,7 @@
 package main
 
 import (
-	"diceware-cli/cmd"
+	"github.com/sylviamoss/diceware-cli/cmd"
 )
 
 func main() {

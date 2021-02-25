@@ -8,7 +8,7 @@ A tool that generates strong passwords based on easily memorable words that are 
 ### Generate passphrase
 ```
 Usage:
-  diceware generate [flags]
+  diceware-cli generate [flags]
 
 Flags:
   -c, --copy               pbcopy password
@@ -16,8 +16,8 @@ Flags:
       --hide               pbcopy and hide password. Password WON'T be printed out
   -l, --lang string        password language
                             available langs: en, pt (default "en")
-      --separator string   character that separates the words,
-                            to remove reparator use --separator=none (default " ")
+      --separator string   character that separates the words.
+                           use --separator=none to remove reparator (default "/")
   -s, --size int32         the amount words the password will have (default 6)
 ```    
    
@@ -28,7 +28,7 @@ Flags:
 Adds new language dictionary.
 
 Usage:
-  diceware config [flags]
+  diceware-cli config [flags]
 
 Flags:
   -a, --add             add new config

@@ -11,41 +11,36 @@ Usage:
   diceware-cli generate [flags]
 
 Flags:
-  -c, --copy               pbcopy password
+      --copy               pbcopy password
   -h, --help               help for generate
       --hide               pbcopy and hide password. Password WON'T be printed out
-  -l, --lang string        password language
+      --lang string        password language
                             available langs: en, pt (default "en")
+      --lower              remove capitalized first letters
       --separator string   character that separates the words.
                            use --separator=none to remove reparator (default "/")
-  -s, --size int32         the amount words the password will have (default 6)
+      --size int32         the amount words the password will have (default 6)
 ```    
    
 
 ### Add custom language dictionary
 
 ```
-Adds new language dictionary.
-
 Usage:
   diceware-cli config [flags]
 
 Flags:
-  -a, --add             add new config
+      --add             add new config
   -h, --help            help for config
-  -l, --lang            add new language
-  -n, --name string     language name
-  -s, --source string   dictionary source file
+      --lang            add new language
+      --name string     language name
+      --source string   dictionary source file
 ```
 
 Example:
 ```
 diceware config --add --lang --source=/Users/diceware-cli/dictionary_file.txt --name=es
-```
-or
-```
-diceware config -a -l -s=/Users/diceware-cli/dictionary_file.txt -n=es
-```   
+```  
 
 
 ## Installation Guide

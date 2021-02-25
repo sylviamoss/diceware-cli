@@ -4,6 +4,7 @@ env:
   - CGO_ENABLED=0
 before:
   hooks:
+    - go mod download
     - go test ./...
 
 builds:
@@ -47,3 +48,4 @@ changelog:
   filters:
     exclude:
       - '^docs:'
+      - '^tech:'

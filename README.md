@@ -17,6 +17,7 @@ Flags:
       --lang string        password language
                             available langs: en, pt (default "en")
       --lower              remove capitalized first letters
+      --remove-number      removes the random number we add by default
       --separator string   character that separates the words.
                            use --separator=none to remove reparator (default "/")
       --size int32         the amount words the password will have (default 6)

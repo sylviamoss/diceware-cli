@@ -19,12 +19,13 @@ import (
 )
 
 type GenerateConfig struct {
-	Lang      string
-	Size      int32
-	Pbcopy    bool
-	Hide      bool
-	Lower     bool
-	Separator string
+	Lang         string
+	Size         int32
+	Pbcopy       bool
+	Hide         bool
+	Lower        bool
+	RemoveNumber bool
+	Separator    string
 }
 
 //go:embed words
@@ -36,8 +37,13 @@ func (c *GenerateConfig) Generate() error {
 		separator = ""
 	}
 
+	numberedIndex, err := rand.Int(rand.Reader, big.NewInt(int64(c.Size)))
+	if err != nil {
+		return err
+	}
+
 	var words string
-	for i := 1; i <= int(c.Size); i++ {
+	for i := 0; i < int(c.Size); i++ {
 		index, err := findDicewareWordIndex()
 		if err != nil {
 			return err
@@ -45,6 +51,14 @@ func (c *GenerateConfig) Generate() error {
 		word, err := c.findDicewareWord(index, c.Lang)
 		if err != nil {
 			return err
+		}
+		if numberedIndex.Int64() == int64(i) && !c.RemoveNumber {
+			randomNumber, err := rand.Int(rand.Reader, big.NewInt(int64(10)))
+			if err != nil {
+				return err
+			}
+			words = fmt.Sprintf("%s%s%d%s", words, word, randomNumber, separator)
+			continue
 		}
 		words = words + word + separator
 	}

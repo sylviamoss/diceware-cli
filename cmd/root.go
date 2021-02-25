@@ -45,6 +45,7 @@ func Execute() {
 	generateCmd.Flags().BoolVar(&generateConfig.Pbcopy, "copy", false, "pbcopy password")
 	generateCmd.Flags().BoolVar(&generateConfig.Hide, "hide", false, "pbcopy and hide password. Password WON'T be printed out")
 	generateCmd.Flags().BoolVar(&generateConfig.Lower, "lower", false, "remove capitalized first letters")
+	generateCmd.Flags().BoolVar(&generateConfig.RemoveNumber, "remove-number", false, "removes the random number we add by default")
 	rootCmd.AddCommand(generateCmd)
 
 	configCmd.Flags().BoolVar(&customConfig.AddLang, "add-lang", false, "add new config language")

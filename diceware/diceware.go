@@ -3,14 +3,15 @@ package diceware
 import (
 	"bufio"
 	"crypto/rand"
+	"embed"
 	"fmt"
 	"math/big"
 	"os"
 	"os/exec"
+	"path/filepath"
 	"strconv"
 	"unicode"
 
-	"github.com/gobuffalo/packr"
 	"golang.org/x/text/runes"
 	"golang.org/x/text/transform"
 	"golang.org/x/text/unicode/norm"
@@ -24,11 +25,10 @@ type GenerateConfig struct {
 	Separator string
 }
 
-var wordsBox packr.Box
+//go:embed words
+var words embed.FS
 
-func (c *GenerateConfig) Generate(box packr.Box) error {
-	wordsBox = box
-
+func (c *GenerateConfig) Generate() error {
 	separator := c.Separator
 	if separator == "none" {
 		separator = ""
@@ -94,10 +94,11 @@ func throwDice() (int64, error) {
 }
 
 func findDicewareWord(number string, lang string) (string, error) {
-	wordPath := "diceware_words_" + lang + "/" + number + ".txt"
-	word, err := wordsBox.FindString(wordPath)
+	wordPath := filepath.Join("words", "diceware_words_"+lang, number+".txt")
+	wordBytes, err := words.ReadFile(wordPath)
+	word := string(wordBytes)
 	if err != nil {
-		word, err = findCustomDicewareWord(wordPath)
+		word, err = findCustomDicewareWord(word)
 		if err != nil {
 			return "", fmt.Errorf("unable to find word for index %q. err: %s", number, err.Error())
 		}
@@ -116,7 +117,8 @@ func findCustomDicewareWord(wordPath string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	file, err := os.Open(home + "/.diceware/" + wordPath)
+	path := filepath.Join(home, ".diceware", wordPath)
+	file, err := os.Open(path)
 	if err != nil {
 		return "", err
 	}

@@ -4,14 +4,13 @@ env:
   - CGO_ENABLED=0
 before:
   hooks:
-    - go mod download
     - go test ./...
 
 builds:
   - 
     mod_timestamp: '{{ .CommitTimestamp }}'
     flags:
-      - -trimpath #removes all file system paths from the compiled executable
+      - -trimpath
     goos:
       - freebsd
       - linux
@@ -42,4 +41,7 @@ signs:
       - "--detach-sign"
       - "${artifact}"
 changelog:
-  skip: true
+  sort: asc
+  filters:
+    exclude:
+      - '^docs:'

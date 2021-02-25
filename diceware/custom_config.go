@@ -11,14 +11,13 @@ import (
 )
 
 type CustomConfig struct {
-	Lang   bool
-	Add    bool
-	Source string
-	Name   string
+	AddLang bool
+	Source  string
+	Name    string
 }
 
 func (c *CustomConfig) Configure() error {
-	if c.Add && c.Lang {
+	if c.AddLang {
 		return c.newLanguage()
 	}
 

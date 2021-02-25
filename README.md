@@ -39,7 +39,7 @@ Flags:
 
 Example:
 ```
-diceware config --add --lang --source=/Users/diceware-cli/dictionary_file.txt --name=es
+diceware config --add-lang --source=/Users/diceware-cli/dictionary_file.txt --name=es
 ```  
 
 

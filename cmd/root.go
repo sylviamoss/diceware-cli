@@ -47,8 +47,7 @@ func Execute() {
 	generateCmd.Flags().BoolVar(&generateConfig.Lower, "lower", false, "remove capitalized first letters")
 	rootCmd.AddCommand(generateCmd)
 
-	configCmd.Flags().BoolVar(&customConfig.Add, "add", false, "add new config")
-	configCmd.Flags().BoolVar(&customConfig.Lang, "lang", false, "add new language")
+	configCmd.Flags().BoolVar(&customConfig.AddLang, "add-lang", false, "add new config language")
 	configCmd.Flags().StringVar(&customConfig.Source, "source", "", "dictionary source file")
 	configCmd.Flags().StringVar(&customConfig.Name, "name", "", "language name")
 	rootCmd.AddCommand(configCmd)

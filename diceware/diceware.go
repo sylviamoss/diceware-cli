@@ -10,6 +10,7 @@ import (
 	"os/exec"
 	"path/filepath"
 	"strconv"
+	"strings"
 	"unicode"
 
 	"golang.org/x/text/runes"
@@ -22,6 +23,7 @@ type GenerateConfig struct {
 	Size      int32
 	Pbcopy    bool
 	Hide      bool
+	Lower     bool
 	Separator string
 }
 
@@ -40,7 +42,7 @@ func (c *GenerateConfig) Generate() error {
 		if err != nil {
 			return err
 		}
-		word, err := findDicewareWord(index, c.Lang)
+		word, err := c.findDicewareWord(index, c.Lang)
 		if err != nil {
 			return err
 		}
@@ -93,15 +95,17 @@ func throwDice() (int64, error) {
 	return number, nil
 }
 
-func findDicewareWord(number string, lang string) (string, error) {
+func (c *GenerateConfig) findDicewareWord(number string, lang string) (string, error) {
 	wordPath := filepath.Join("words", "diceware_words_"+lang, number+".txt")
+	word := ""
 	wordBytes, err := words.ReadFile(wordPath)
-	word := string(wordBytes)
 	if err != nil {
-		word, err = findCustomDicewareWord(word)
+		word, err = findCustomDicewareWord(string(wordBytes))
 		if err != nil {
 			return "", fmt.Errorf("unable to find word for index %q. err: %s", number, err.Error())
 		}
+	} else {
+		word = string(wordBytes)
 	}
 
 	t := transform.Chain(norm.NFD, runes.Remove(runes.In(unicode.Mn)), norm.NFC)
@@ -109,7 +113,11 @@ func findDicewareWord(number string, lang string) (string, error) {
 	if err != nil {
 		return "", fmt.Errorf("unable to remove special characters from %q. err: %s", word, err.Error())
 	}
-	return transformedWord, nil
+
+	if c.Lower {
+		return transformedWord, nil
+	}
+	return strings.Title(transformedWord), nil
 }
 
 func findCustomDicewareWord(wordPath string) (string, error) {

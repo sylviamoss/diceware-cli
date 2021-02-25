@@ -50,10 +50,12 @@ diceware config -a -l -s=/Users/diceware-cli/dictionary_file.txt -n=es
 
 ## Installation Guide
 
-Unzip the zip files to find the binaries inside the `pkg` folder.
+Unzip the zip files to find the binaries inside.
 
 On Unix systems, place the binaries in your favorite folder, but to access it from the command-line, you will need to add the folder path somewhere on your **PATH** variable. 
 
 See [this page](https://stackoverflow.com/questions/14637979/how-to-permanently-set-path-on-linux-unix) for instructions on setting the **PATH** on Linux and Mac. [This page](https://stackoverflow.com/questions/1618280/where-can-i-set-path-to-make-exe-on-windows) contains instructions for setting the **PATH** on Windows.
 
 If you face some difficulty during the installation, please let me know by reporting an issue in this repository.
+
+The binaries are not notarized to MacOS. Users will have to manually allow the system to execute the binaries.

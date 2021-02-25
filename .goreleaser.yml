@@ -11,6 +11,8 @@ builds:
     mod_timestamp: '{{ .CommitTimestamp }}'
     flags:
       - -trimpath
+    ldflags:
+      - '-s -w -X cmd.Version={{.Version}} -X cmd.VersionPrerelease= '
     goos:
       - freebsd
       - linux

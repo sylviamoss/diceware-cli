@@ -2,18 +2,13 @@
 # Make sure to check the documentation at http://goreleaser.com
 env:
   - CGO_ENABLED=0
-before:
-  hooks:
-    - go mod download
-    - go test ./...
-
 builds:
   - 
     mod_timestamp: '{{ .CommitTimestamp }}'
     flags:
       - -trimpath
     ldflags:
-      - '-s -w -X cmd.Version={{.Version}} -X cmd.VersionPrerelease= '
+      - '-s -w -X github.com/sylviamoss/diceware-cli/cmd.Version={{.Version}} -X github.com/sylviamoss/diceware-cli/cmd.VersionPrerelease= '
     goos:
       - freebsd
       - linux

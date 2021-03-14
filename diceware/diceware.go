@@ -18,7 +18,7 @@ import (
 	"golang.org/x/text/unicode/norm"
 )
 
-type GenerateConfig struct {
+type Config struct {
 	Lang         string
 	Size         int32
 	Pbcopy       bool
@@ -31,7 +31,7 @@ type GenerateConfig struct {
 //go:embed words
 var words embed.FS
 
-func (c *GenerateConfig) Generate() error {
+func (c *Config) Generate() error {
 	separator := c.Separator
 	if separator == "none" {
 		separator = ""
@@ -69,7 +69,6 @@ func (c *GenerateConfig) Generate() error {
 		if err := exec.Command("sh", "-c", cmd).Run(); err != nil {
 			return fmt.Errorf("error copying passphrase: %s", err.Error())
 		}
-		fmt.Println("Password copied!")
 	}
 
 	if c.Hide {
@@ -109,12 +108,12 @@ func throwDice() (int64, error) {
 	return number, nil
 }
 
-func (c *GenerateConfig) findDicewareWord(number string, lang string) (string, error) {
+func (c *Config) findDicewareWord(number string, lang string) (string, error) {
 	wordPath := filepath.Join("words", "diceware_words_"+lang, number+".txt")
 	word := ""
 	wordBytes, err := words.ReadFile(wordPath)
 	if err != nil {
-		word, err = findCustomDicewareWord(string(wordBytes))
+		word, err = findCustomDicewareWord(filepath.Join("diceware_words_"+lang, number+".txt"))
 		if err != nil {
 			return "", fmt.Errorf("unable to find word for index %q. err: %s", number, err.Error())
 		}
@@ -139,7 +138,7 @@ func findCustomDicewareWord(wordPath string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	path := filepath.Join(home, ".diceware", wordPath)
+	path := filepath.Join(home, ".diceware-cli.d", wordPath)
 	file, err := os.Open(path)
 	if err != nil {
 		return "", err
@@ -151,5 +150,5 @@ func findCustomDicewareWord(wordPath string) (string, error) {
 		return scanner.Text(), nil
 	}
 
-	return "", fmt.Errorf("couldn't read word from custom dictionary.")
+	return "", fmt.Errorf("couldn't read word from custom dictionary.\n")
 }

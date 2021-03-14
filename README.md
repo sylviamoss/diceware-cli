@@ -13,7 +13,7 @@ Usage:
 Flags:
       --copy               pbcopy password
   -h, --help               help for generate
-      --hide               pbcopy and hide password. Password WON'T be printed out
+      --hide               pbcopy and hide password. You WON'T see the password
       --lang string        password language
                             available langs: en, pt (default "en")
       --lower              remove capitalized first letters
@@ -21,7 +21,21 @@ Flags:
       --separator string   character that separates the words.
                            use --separator=none to remove reparator (default "/")
       --size int32         the amount words the password will have (default 6)
-```    
+```
+
+Examples: 
+
+Generate a Portuguese passphrase and copy it automatically: 
+```
+~> diceware-cli generate --lang=pt --copy
+Pungir/Bip4/Quorum/Vau/Vida/Censor
+```
+
+Generate an English (default) passphrase with seven words, backslash separator, and copy it automatically: 
+```
+~> diceware-cli generate --copy --size=7 --separator=\\
+Unashamed2\Sublime\Rejoin\Justly\Audition\Glove\Cahoots
+```
    
 
 ### Add custom language dictionary
@@ -38,11 +52,18 @@ Flags:
       --source string   dictionary source file
 ```
 
-Example:
+Example of adding an Spanish diceware dictionary:
 ```
-diceware config --add-lang --source=/Users/diceware-cli/dictionary_file.txt --name=es
-```  
+diceware-cli config --add-lang --source=/Users/diceware-cli/dictionary_file.txt --name=es
+``` 
 
+The `dictionary_file.txt` content must be in the same format as this [example of word list](https://www.eff.org/files/2016/07/18/eff_large_wordlist.txt). 
+The custom dictionary configuration will be ketp under `$HOME/.diceware-cli.d/diceware_words_{language}`
+
+To further generate Spanish diceware passphrase, you'd do: 
+```
+~> diceware-cli generate --lang=es
+``` 
 
 ## Installation Guide
 

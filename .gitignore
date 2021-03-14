@@ -2,3 +2,4 @@ diceware-cli
 pkg/
 .DS_Store
 .vscode/
+es_config.txt

@@ -40,7 +40,7 @@ func (c *CustomConfig) newLanguage() error {
 		return err
 	}
 
-	dicewarePath := home + "/.diceware/diceware_words_" + c.Name
+	dicewarePath := home + "/.diceware-cli.d/diceware_words_" + c.Name
 	if _, err := os.Stat(dicewarePath); os.IsNotExist(err) {
 		err = os.MkdirAll(dicewarePath, os.ModePerm)
 	}

@@ -39,13 +39,13 @@ var (
 func Execute() {
 	rootCmd.AddCommand(versionCmd)
 
-	generateCmd.Flags().StringVar(&generateConfig.Lang, "lang", "en", "password language\n available langs: en, pt")
-	generateCmd.Flags().StringVar(&generateConfig.Separator, "separator", "/", "character that separates the words.\nuse --separator=none to remove reparator")
-	generateCmd.Flags().Int32Var(&generateConfig.Size, "size", 6, "the amount words the password will have")
-	generateCmd.Flags().BoolVar(&generateConfig.Pbcopy, "copy", false, "pbcopy password")
-	generateCmd.Flags().BoolVar(&generateConfig.Hide, "hide", false, "pbcopy and hide password. Password WON'T be printed out")
-	generateCmd.Flags().BoolVar(&generateConfig.Lower, "lower", false, "remove capitalized first letters")
-	generateCmd.Flags().BoolVar(&generateConfig.RemoveNumber, "remove-number", false, "removes the random number we add by default")
+	generateCmd.Flags().StringVar(&dicewareConfig.Lang, "lang", "en", "password language\n available langs: en, pt")
+	generateCmd.Flags().StringVar(&dicewareConfig.Separator, "separator", "/", "character that separates the words.\nuse --separator=none to remove reparator")
+	generateCmd.Flags().Int32Var(&dicewareConfig.Size, "size", 6, "the amount words the password will have")
+	generateCmd.Flags().BoolVar(&dicewareConfig.Pbcopy, "copy", false, "pbcopy password")
+	generateCmd.Flags().BoolVar(&dicewareConfig.Hide, "hide", false, "pbcopy and hide password. You WON'T see the password")
+	generateCmd.Flags().BoolVar(&dicewareConfig.Lower, "lower", false, "remove capitalized first letters")
+	generateCmd.Flags().BoolVar(&dicewareConfig.RemoveNumber, "remove-number", false, "removes the random number we add by default")
 	rootCmd.AddCommand(generateCmd)
 
 	configCmd.Flags().BoolVar(&customConfig.AddLang, "add-lang", false, "add new config language")

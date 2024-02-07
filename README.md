@@ -5,7 +5,15 @@ A tool that generates strong passwords based on easily memorable words that are 
 
 ## Usage
 
-### Generate passphrase
+### Installing 
+If you have Go installed, simply run: 
+```
+go install github.com/sylviamoss/diceware-cli@latest
+```
+
+If that's not your case, check the [Installation Guide](#installation-Guide). 
+
+### Generating passphrase
 ```
 Usage:
   diceware-cli generate [flags]
@@ -19,7 +27,7 @@ Flags:
       --lower              remove capitalized first letters
       --remove-number      removes the random number we add by default
       --separator string   character that separates the words.
-                           use --separator=none to remove reparator (default "/")
+                           use --separator=none to remove separator (default "/")
       --size int32         the amount words the password will have (default 6)
 ```
 
@@ -38,7 +46,7 @@ Unashamed2\Sublime\Rejoin\Justly\Audition\Glove\Cahoots
 ```
    
 
-### Add custom language dictionary
+### Adding custom language dictionary
 
 ```
 Usage:
@@ -52,7 +60,7 @@ Flags:
       --source string   dictionary source file
 ```
 
-Example of adding an Spanish diceware dictionary:
+Example of adding a Spanish diceware dictionary:
 ```
 diceware-cli config --add-lang --source=/Users/diceware-cli/dictionary_file.txt --name=es
 ``` 
@@ -67,7 +75,7 @@ To further generate Spanish diceware passphrase, you'd do:
 
 ## Installation Guide
 
-Unzip the zip files to find the binaries inside. To access it from the command-line, you will need to add the folder path somewhere on your **PATH** variable. 
+Unzip the zip files to find the binaries inside. To access it from the command line, you will need to add the folder path somewhere on your **PATH** variable. 
 
 See [this page](https://stackoverflow.com/questions/14637979/how-to-permanently-set-path-on-linux-unix) for instructions on setting the **PATH** on Linux and Mac. [This page](https://stackoverflow.com/questions/1618280/where-can-i-set-path-to-make-exe-on-windows) contains instructions for setting the **PATH** on Windows.
 

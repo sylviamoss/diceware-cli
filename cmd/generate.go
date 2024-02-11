@@ -36,8 +36,9 @@ var (
 	generateCmd = &cobra.Command{
 		Use:   "generate",
 		Short: "Generates a diceware password with custom configuration.",
-		Long: `Generates strong passwords based on easily memorable passwords that are 
-	also extremely resistant to attack.`,
+		Long: `Generates strong passwords based on easily memorable passphrases that are also extremely resistant to attack.
+
+You can customize the default values of the flags by setting them in the config file.`,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			// Read the from config file, otherwise default value will be used
 			dicewareConfig = diceware.Config{

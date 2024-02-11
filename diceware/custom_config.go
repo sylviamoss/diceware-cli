@@ -10,13 +10,13 @@ import (
 	"github.com/cheggaaa/pb/v3"
 )
 
-type CustomConfig struct {
+type Dictionary struct {
 	AddLang bool
 	Source  string
 	Name    string
 }
 
-func (c *CustomConfig) Configure() error {
+func (c *Dictionary) Configure() error {
 	if c.AddLang {
 		return c.newLanguage()
 	}
@@ -24,7 +24,7 @@ func (c *CustomConfig) Configure() error {
 	return nil
 }
 
-func (c *CustomConfig) newLanguage() error {
+func (c *Dictionary) newLanguage() error {
 	if c.Source == "" || c.Name == "" {
 		return fmt.Errorf("Please provide both dictionary source file and language name (--source, --name)")
 	}

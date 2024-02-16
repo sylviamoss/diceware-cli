@@ -1,0 +1,103 @@
+name: prerelease
+
+on:
+  # Run Every Wednesday at 01:00 AM UTC
+  schedule:
+    - cron: '0 2 * * 3'
+  workflow_dispatch:
+    inputs:
+      release-as-minor:
+        description: "Minor Release (default: Patch)"
+        type: boolean
+        default: false
+      skip-release:
+          description: "Skip the tag creation step (default: false)"
+          type: boolean
+          default: false
+  
+
+permissions: write-all
+
+jobs:
+  prerelease:
+    name: Prerelease
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Unshallow
+        run: git fetch --prune --unshallow
+
+      - name: Setup Go
+        uses: actions/setup-go@v2
+        with:
+          cache: true
+          go-version-file: 'go.mod'
+          cache-dependency-path: go.sum
+      
+      - name: Configure Git
+        env:
+          TOKEN: ${{ secrets.HCP_SDK_PIPELINE_TOKEN }}
+        run: |
+            git config --global advice.detachedHead false
+            git config --global url."https://${TOKEN}:x-oauth-basic@github.com/".insteadOf "https://github.com/"
+            git config user.name "sylviamoss"
+            git config user.email "sylviamoss@gmail.com"
+
+      - name: Check For Changes
+        id: changes
+        run: |
+          CURRENT_VERSION=$(git describe --tags `git rev-list --tags --max-count=1`)
+          DIFF_CONTENT=$(git diff $CURRENT_VERSION origin/master)
+          if [[ $DIFF_CONTENT == "" ]]; then
+            echo "There were no changes since the last release."
+            echo "There were no changes since the last release." >> $GITHUB_STEP_SUMMARY
+            echo "HAS_CHANGES=false" >> $GITHUB_OUTPUT
+          else
+            echo "There were changes since the last release."
+            echo "HAS_CHANGES=true" >> $GITHUB_OUTPUT
+            echo "CURRENT_VERSION=$CURRENT_VERSION" >> "$GITHUB_ENV"
+          fi
+
+      - name: Prepare Release
+        if: steps.changes.outputs.HAS_CHANGES == 'true'
+        env:
+          IS_MINOR: ${{ contains(inputs.release-as-minor, 'true') }}
+        run: |
+          CURRENT_VERSION_PARTS=(${CURRENT_VERSION//./ })
+          MAJOR=${CURRENT_VERSION_PARTS[0]}
+          MINOR=${CURRENT_VERSION_PARTS[1]}
+          PATCH=${CURRENT_VERSION_PARTS[2]}
+
+          if [[ $IS_MINOR == "true" ]]
+          then
+            MINOR=$((MINOR+1))
+            PATCH=0
+          else
+            PATCH=$((PATCH+1))
+          fi
+
+          NEW_VERSION="${MAJOR}.${MINOR}.${PATCH}"
+          echo "NEW_VERSION=$NEW_VERSION" >> "$GITHUB_ENV"
+
+          echo "Current Version is: $CURRENT_VERSION"
+          echo "New Version will be: $NEW_VERSION"
+          echo "## Updating ${CURRENT_VERSION} to ${NEW_VERSION}" >> $GITHUB_STEP_SUMMARY
+
+          echo "## Diff from Prerelease tasks" >> $GITHUB_STEP_SUMMARY
+          echo "\`\`\`diff" >> $GITHUB_STEP_SUMMARY
+          git diff @{upstream} @ >> $GITHUB_STEP_SUMMARY
+          echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+          echo "Diff from Prerelease tasks:"
+          git diff @{upstream} @
+
+      - name: Release New Version
+        if: success() && github.ref_name == 'main' && steps.changes.outputs.HAS_CHANGES == 'true' && ${{ !inputs.skip-release }}
+        run: |
+          git tag -a ${NEW_VERSION} -m "New version ${NEW_VERSION}"
+          echo "Git configuration:"
+          git config -l
+          echo "Pushing new tag to remote, which will trigger the Release workflow"
+          git push --tags
+

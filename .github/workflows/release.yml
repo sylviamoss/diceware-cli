@@ -1,35 +1,44 @@
 # This GitHub action can publish assets for release when a tag is created.
 name: release
+
 on:
+  pull_request:
   push:
+    # run only against tags
     tags:
-      - 'v*'
+      - "*"
+
+permissions:
+  contents: write
+
 jobs:
   goreleaser:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
-      - name: Unshallow
-        run: git fetch --prune --unshallow
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
       - name: Set up Go
-        uses: actions/setup-go@v2
+        uses: actions/setup-go@v4
         with:
           cache: true
           go-version-file: 'go.mod'
           cache-dependency-path: go.sum
-          
+
       - name: Import GPG key
         id: import_gpg
-        uses: paultyng/ghaction-import-gpg@v2.1.0
+        uses: crazy-max/ghaction-import-gpg@v6
         env:
-          GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
-          PASSPHRASE: ${{ secrets.PASSPHRASE }}
+          gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
+          passphrase: ${{ secrets.PASSPHRASE }}
+
       - name: Run GoReleaser
-        uses: goreleaser/goreleaser-action@v2
+        uses: goreleaser/goreleaser-action@v5
         with:
           version: latest
-          args: release --rm-dist
+          args: release --clean
         env:
           GPG_FINGERPRINT: ${{ steps.import_gpg.outputs.fingerprint }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

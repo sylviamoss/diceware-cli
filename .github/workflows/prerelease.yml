@@ -2,14 +2,20 @@ name: prerelease
 
 on:
   # Run Every Wednesday at 01:00 AM UTC
-  schedule:
-    - cron: '0 2 * * 3'
+  # schedule:
+  #   - cron: '0 2 * * 3'
   workflow_dispatch:
     inputs:
-      release-as-minor:
-        description: "Minor Release (default: Patch)"
-        type: boolean
-        default: false
+      release-tag:
+        description: "Choose a release type"
+        required: true
+        type: choice
+        default: 'patch'
+        options:
+          - patch
+          - minor
+          - major
+
       skip-release:
           description: "Skip the tag creation step (default: false)"
           type: boolean
@@ -43,7 +49,7 @@ jobs:
             git config --global advice.detachedHead false
             git config --global url."https://${TOKEN}:x-oauth-basic@github.com/".insteadOf "https://github.com/"
             git config user.name "sylviamoss"
-            git config user.email "sylviamoss@gmail.com"
+            git config user.email "sylviamoss.m@gmail.com"
 
       - name: Check For Changes
         id: changes
@@ -63,7 +69,7 @@ jobs:
       - name: Prepare Release
         if: steps.changes.outputs.HAS_CHANGES == 'true'
         env:
-          IS_MINOR: ${{ contains(inputs.release-as-minor, 'true') }}
+          RELEASE_TAG: ${{ inputs.release-tag }}
           GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
         run: |
           CURRENT_VERSION_PARTS=(${CURRENT_VERSION//./ })
@@ -71,11 +77,14 @@ jobs:
           MINOR=${CURRENT_VERSION_PARTS[1]}
           PATCH=${CURRENT_VERSION_PARTS[2]}
 
-          if [[ $IS_MINOR == "true" ]]
-          then
+          if [[ $RELEASE_TAG == "major" ]]; then
+            MAJOR=$((MAJOR+1))
+            MINOR=0
+            PATCH=0
+          elif [[ $RELEASE_TAG == "minor" ]]; then
             MINOR=$((MINOR+1))
             PATCH=0
-          else
+          elif [[ $RELEASE_TAG == "patch" ]]; then
             PATCH=$((PATCH+1))
           fi
 
@@ -84,11 +93,21 @@ jobs:
 
           echo "Current Version is: $CURRENT_VERSION"
           echo "New Version will be: $NEW_VERSION"
+          echo "Commits since last release:"
+          COMMITS=$(git --no-pager log --pretty=format:"- %h %s"  ${CURRENT_VERSION}...origin/master)
+          echo "$COMMITS"
+
           echo "## Updating ${CURRENT_VERSION} to ${NEW_VERSION}" >> $GITHUB_STEP_SUMMARY
+          echo "## Commits that will be added to the release" >> $GITHUB_STEP_SUMMARY
+          echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+          echo "$COMMITS" >> $GITHUB_STEP_SUMMARY
+          echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+        
 
       - name: Release New Version
         if: ${{ success() && github.ref_name == 'master' && steps.changes.outputs.HAS_CHANGES == 'true' && !inputs.skip-release }}
         env:
+          # Github actions need special tokens to be able to trigger other workflows
           GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
         run: |
           git tag -a ${NEW_VERSION} -m "New version ${NEW_VERSION}"

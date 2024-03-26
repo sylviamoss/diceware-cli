@@ -10,9 +10,10 @@ import (
 	"os/exec"
 	"path/filepath"
 	"strconv"
-	"strings"
 	"unicode"
 
+	"golang.org/x/text/cases"
+	"golang.org/x/text/language"
 	"golang.org/x/text/runes"
 	"golang.org/x/text/transform"
 	"golang.org/x/text/unicode/norm"
@@ -76,7 +77,7 @@ func (c *Config) Generate() error {
 	}
 
 	if words == "" {
-		return fmt.Errorf("unable to generate passphrase.")
+		return fmt.Errorf("unable to generate passphrase")
 	}
 
 	fmt.Println(words)
@@ -130,7 +131,8 @@ func (c *Config) findDicewareWord(number string, lang string) (string, error) {
 	if c.Lower {
 		return transformedWord, nil
 	}
-	return strings.Title(transformedWord), nil
+
+	return cases.Title(language.Und, cases.NoLower).String(transformedWord), nil
 }
 
 func findCustomDicewareWord(wordPath string) (string, error) {
@@ -150,5 +152,5 @@ func findCustomDicewareWord(wordPath string) (string, error) {
 		return scanner.Text(), nil
 	}
 
-	return "", fmt.Errorf("couldn't read word from custom dictionary.\n")
+	return "", fmt.Errorf("couldn't read word from custom dictionary")
 }

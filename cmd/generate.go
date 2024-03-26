@@ -21,13 +21,13 @@ func init() {
 	generateCmd.Flags().StringVarP(&generate.configFile, "config", "c", "", "config file (default is $HOME/.diceware-cli.yaml)")
 
 	// Configure viper to read from the config file, if set
-	viper.BindPFlag("generate.lang", generateCmd.Flags().Lookup("lang"))
-	viper.BindPFlag("generate.separator", generateCmd.Flags().Lookup("separator"))
-	viper.BindPFlag("generate.size", generateCmd.Flags().Lookup("size"))
-	viper.BindPFlag("generate.copy", generateCmd.Flags().Lookup("copy"))
-	viper.BindPFlag("generate.hide", generateCmd.Flags().Lookup("hide"))
-	viper.BindPFlag("generate.lower", generateCmd.Flags().Lookup("lower"))
-	viper.BindPFlag("generate.remove-number", generateCmd.Flags().Lookup("remove-number"))
+	_ = viper.BindPFlag("generate.lang", generateCmd.Flags().Lookup("lang"))
+	_ = viper.BindPFlag("generate.separator", generateCmd.Flags().Lookup("separator"))
+	_ = viper.BindPFlag("generate.size", generateCmd.Flags().Lookup("size"))
+	_ = viper.BindPFlag("generate.copy", generateCmd.Flags().Lookup("copy"))
+	_ = viper.BindPFlag("generate.hide", generateCmd.Flags().Lookup("hide"))
+	_ = viper.BindPFlag("generate.lower", generateCmd.Flags().Lookup("lower"))
+	_ = viper.BindPFlag("generate.remove-number", generateCmd.Flags().Lookup("remove-number"))
 
 	rootCmd.AddCommand(generateCmd)
 }

@@ -26,7 +26,7 @@ func (c *Dictionary) Configure() error {
 
 func (c *Dictionary) newLanguage() error {
 	if c.Source == "" || c.Name == "" {
-		return fmt.Errorf("Please provide both dictionary source file and language name (--source, --name)")
+		return fmt.Errorf("please provide both dictionary source file and language name (--source, --name)")
 	}
 
 	file, err := os.Open(c.Source)
@@ -41,7 +41,7 @@ func (c *Dictionary) newLanguage() error {
 	}
 
 	dicewarePath := home + "/.diceware-cli.d/diceware_words_" + c.Name
-	if _, err := os.Stat(dicewarePath); os.IsNotExist(err) {
+	if _, err = os.Stat(dicewarePath); os.IsNotExist(err) {
 		err = os.MkdirAll(dicewarePath, os.ModePerm)
 	}
 	if err != nil && !os.IsNotExist(err) {
@@ -62,8 +62,14 @@ func (c *Dictionary) newLanguage() error {
 		if err != nil {
 			return err
 		}
-		f.WriteString(words[1])
-		f.Sync()
+		_, err = f.WriteString(words[1])
+		if err != nil {
+			return err
+		}
+		err = f.Sync()
+		if err != nil {
+			return err
+		}
 		f.Close()
 	}
 	bar.Finish()

@@ -11,13 +11,13 @@ import (
 func init() {
 	// Deprecated flags
 	configCmd.Flags().BoolVar(&config.AddLang, "add-lang", false, "add new config language")
-	configCmd.Flags().MarkDeprecated("add-lang", "please use the equivalent flag in the 'dictionary' command instead")
+	_ = configCmd.Flags().MarkDeprecated("add-lang", "please use the equivalent flag in the 'dictionary' command instead")
 
 	configCmd.Flags().StringVar(&config.Source, "source", "", "dictionary source file")
-	configCmd.Flags().MarkDeprecated("source", "please use the equivalent flag in the 'dictionary' command instead")
+	_ = configCmd.Flags().MarkDeprecated("source", "please use the equivalent flag in the 'dictionary' command instead")
 
 	configCmd.Flags().StringVar(&config.Name, "name", "", "language name")
-	configCmd.Flags().MarkDeprecated("name", "please use the equivalent flag in the 'dictionary' command instead")
+	_ = configCmd.Flags().MarkDeprecated("name", "please use the equivalent flag in the 'dictionary' command instead")
 
 	configCmd.AddCommand(generateConfigCmd)
 	rootCmd.AddCommand(configCmd)

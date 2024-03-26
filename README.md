@@ -7,14 +7,14 @@ A tool that generates strong passwords based on easily memorable words that are 
 
 ### Installing 
 If you have Go installed, simply run: 
-```
+```shell
 go install github.com/sylviamoss/diceware-cli@latest
 ```
 
 If that's not your case, check the [Installation Guide](#installation-Guide). 
 
 ### Generating passphrase
-```
+```shell
 Usage:
   diceware-cli generate [flags]
 
@@ -34,43 +34,74 @@ Flags:
 Examples: 
 
 Generate a Portuguese passphrase and copy it automatically: 
-```
+```shell
 ~> diceware-cli generate --lang=pt --copy
 Pungir/Bip4/Quorum/Vau/Vida/Censor
 ```
 
 Generate an English (default) passphrase with seven words, backslash separator, and copy it automatically: 
-```
+```shell
 ~> diceware-cli generate --copy --size=7 --separator=\\
 Unashamed2\Sublime\Rejoin\Justly\Audition\Glove\Cahoots
 ```
-   
+
+#### Overriding flags default 
+
+To avoid typing the same flags over and over again, you can override the default values using a configuration file.    
+
+You can pass the configuration file path as a flag to the `generate` command:
+```shell
+diceware-clid generate --config=/path/to/config.yaml
+```
+
+Or you can create the default configuration file `.diceware-cli.yaml` under your home directory and the CLI will automatically pick it up.
+
+You can generate the configuration file content using the CLI: 
+```shell
+~> diceware-cli config generate
+# diceware-cli config file yaml content
+# You can customize the default values of the flags by setting them in this file.
+generate:
+  lang: en
+  separator: /
+  size: 6
+  copy: false
+  hide: false
+  lower: false
+```
+
+You can use the generated content to write directly to `$HOME/.diceware-cli.yaml`:
+```shell
+diceware-cli config generate > $HOME/.diceware-cli.yaml
+```
+
+Replace the values you would like to override with your own.
+
 
 ### Adding custom language dictionary
 
-```
+```shell
 Usage:
-  diceware-cli config [flags]
+  diceware-cli dictionary [flags]
 
 Flags:
-      --add             add new config
-  -h, --help            help for config
-      --lang            add new language
+      --add-lang        add new config language
+  -h, --help            help for dictionary
       --name string     language name
       --source string   dictionary source file
 ```
 
 Example of adding a Spanish diceware dictionary:
-```
-diceware-cli config --add-lang --source=/Users/diceware-cli/dictionary_file.txt --name=es
+```shell
+diceware-cli dictionary --add-lang --source=/Users/diceware-cli/dictionary_file.txt --name=es
 ``` 
 
 The `dictionary_file.txt` content must be in the same format as this [example of word list](https://www.eff.org/files/2016/07/18/eff_large_wordlist.txt). 
 The custom dictionary configuration will be ketp under `$HOME/.diceware-cli.d/diceware_words_{language}`
 
 To further generate Spanish diceware passphrase, you'd do: 
-```
-~> diceware-cli generate --lang=es
+```shell
+diceware-cli generate --lang=es
 ``` 
 
 ## Installation Guide

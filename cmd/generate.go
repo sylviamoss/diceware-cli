@@ -10,13 +10,15 @@ import (
 )
 
 func init() {
-	generateCmd.Flags().StringVar(&dicewareConfig.Lang, "lang", "en", "password language\n available langs: en, pt")
-	generateCmd.Flags().StringVar(&dicewareConfig.Separator, "separator", "/", "character that separates the words.\nuse --separator=none to remove reparator")
-	generateCmd.Flags().Int32Var(&dicewareConfig.Size, "size", 6, "the amount words the password will have")
-	generateCmd.Flags().BoolVar(&dicewareConfig.Pbcopy, "copy", false, "pbcopy password")
-	generateCmd.Flags().BoolVar(&dicewareConfig.Hide, "hide", false, "pbcopy and hide password. You WON'T see the password")
-	generateCmd.Flags().BoolVar(&dicewareConfig.Lower, "lower", false, "remove capitalized first letters")
-	generateCmd.Flags().BoolVar(&dicewareConfig.RemoveNumber, "remove-number", false, "removes the random number we add by default")
+	generateCmd.Flags().StringVar(&generate.Lang, "lang", "en", "password language\n available langs: en, pt")
+	generateCmd.Flags().StringVar(&generate.Separator, "separator", "/", "character that separates the words.\nuse --separator=none to remove separator")
+	generateCmd.Flags().Int32Var(&generate.Size, "size", 6, "the amount words the password will have")
+	generateCmd.Flags().BoolVar(&generate.Pbcopy, "copy", false, "pbcopy password")
+	generateCmd.Flags().BoolVar(&generate.Hide, "hide", false, "pbcopy and hide password. You WON'T see the password")
+	generateCmd.Flags().BoolVar(&generate.Lower, "lower", false, "remove capitalized first letters")
+	generateCmd.Flags().BoolVar(&generate.RemoveNumber, "remove-number", false, "removes the random number we add by default")
+
+	generateCmd.Flags().StringVarP(&generate.configFile, "config", "c", "", "config file (default is $HOME/.diceware-cli.yaml)")
 
 	// Configure viper to read from the config file, if set
 	viper.BindPFlag("generate.lang", generateCmd.Flags().Lookup("lang"))
@@ -30,8 +32,13 @@ func init() {
 	rootCmd.AddCommand(generateCmd)
 }
 
+type Generate struct {
+	diceware.Config
+	configFile string
+}
+
 var (
-	dicewareConfig diceware.Config
+	generate Generate
 
 	generateCmd = &cobra.Command{
 		Use:   "generate",
@@ -41,17 +48,19 @@ var (
 You can customize the default values of the flags by setting them in the config file.`,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			// Read the from config file, otherwise default value will be used
-			dicewareConfig = diceware.Config{
-				Lang:         viper.GetString("generate.lang"),
-				Separator:    viper.GetString("generate.separator"),
-				Size:         viper.GetInt32("generate.size"),
-				Pbcopy:       viper.GetBool("generate.copy"),
-				Hide:         viper.GetBool("generate.hide"),
-				Lower:        viper.GetBool("generate.lower"),
-				RemoveNumber: viper.GetBool("generate.remove-number"),
+			generate = Generate{
+				Config: diceware.Config{
+					Lang:         viper.GetString("generate.lang"),
+					Separator:    viper.GetString("generate.separator"),
+					Size:         viper.GetInt32("generate.size"),
+					Pbcopy:       viper.GetBool("generate.copy"),
+					Hide:         viper.GetBool("generate.hide"),
+					Lower:        viper.GetBool("generate.lower"),
+					RemoveNumber: viper.GetBool("generate.remove-number"),
+				},
 			}
 
-			if err := dicewareConfig.Generate(); err != nil {
+			if err := generate.Generate(); err != nil {
 				errorMsg := fmt.Sprintf("Ops...something went wrong: %s", err.Error())
 				return errors.New(errorMsg)
 			}
